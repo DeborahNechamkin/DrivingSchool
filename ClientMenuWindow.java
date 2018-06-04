@@ -15,11 +15,14 @@ public class ClientMenuWindow extends JFrame
 	JButton viewBalanceButton;
 	JButton makePaymentButton;
 	Box verticalBox;
+	ClientMenuWindow window;
 
 	public ClientMenuWindow(Connection dbConnection)
 	{
 		this.dbConnection = dbConnection;	
+		window = this;
 		this.setUpWindow();
+		this.pack();
 		this.setVisible(true);
 	}
 
@@ -74,19 +77,21 @@ public class ClientMenuWindow extends JFrame
 			JButton theButton = (JButton)event.getSource();
 			
 			if (theButton == viewInstructorAvailabilityButton) {
+				window.dispose();
 				new viewInstructorAvailabilityWindow(dbConnection);
 			}
 			else if (theButton == scheduleLessonButton) {		
-				//new scheduleLessonWindow(dbConnection);
+				window.dispose();
+				new ScheduleLessonWindow(dbConnection);
 			}
 			else if (theButton == viewTestResultsButton) {
-				//new viewTestResultsWindow(dbConnection);
+				new viewTestResultsWindow(dbConnection);
 			}
 			else if (theButton == viewBalanceButton) {
-				//new viewBalanceWindow(dbConnection);
+				new ViewBalanceWindow(dbConnection);
 			}
 			else if (theButton == makePaymentButton) {
-				//new makePaymentWindow(dbConnection);
+				new MakePaymentWindow(dbConnection);
 			}	
 		}	
 	}

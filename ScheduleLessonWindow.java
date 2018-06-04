@@ -1,35 +1,37 @@
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
+import java.util.TimeZone;
 import javax.swing.*;
 
 @SuppressWarnings("serial")
-public class viewInstructorAvailabilityWindow extends JFrame
+public class ScheduleLessonWindow extends JFrame
 {
 	private Connection dbConnection;
 	private JComboBox<String> instructorList_combo;
 	private JTextField dateText;
 	private JTextField timeText;
+	private JTextField clientText;
 	private JFrame window;
-	private JLabel resultsLabel;
 
-	public viewInstructorAvailabilityWindow(Connection dbConnection)
+	public ScheduleLessonWindow(Connection dbConnection)
 	{
 		this.dbConnection = dbConnection;
-		this.setTitle("View Availability");
+		this.setTitle("Schedule Lesson");
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		window = this;
 
-		this.setLayout(new GridLayout(5, 2));
+		this.setLayout(new GridLayout(5, 3));
+
+		this.add(new JLabel("Client ID"));
+		clientText = new JTextField(8);
+		this.add(clientText);
+
 		setupInstructorList();
 		this.add(new JLabel("Instructor"));
 		this.add(instructorList_combo);
@@ -41,10 +43,7 @@ public class viewInstructorAvailabilityWindow extends JFrame
 		this.add(new JLabel("Time"));
 		this.add(timeText);
 
-		this.add(new GenericButtonPanel(this, dbConnection, new ViewAvailabilityActionListener()));
-
-		resultsLabel = new JLabel();
-		this.add(resultsLabel);
+		this.add(new GenericButtonPanel(this, dbConnection, new ScheduleLessonActionListener()));
 		this.pack();
 		this.setVisible(true);
 
@@ -102,64 +101,52 @@ public class viewInstructorAvailabilityWindow extends JFrame
 		}
 	}
 
-	private class ViewAvailabilityActionListener implements ActionListener
+	private class ScheduleLessonActionListener implements ActionListener
 	{
-
 		@Override
-		public void actionPerformed(ActionEvent e)
+		public void actionPerformed(ActionEvent event)
 		{
 			try
 			{
-				String sql = "select fromdate, todate from instructorvacation where instructorid = "
-						+ getInstructorID();
-				Statement stmt = dbConnection.createStatement();
+				PreparedStatement pstmt = dbConnection
+						.prepareStatement("insert into DrivingLesson (DrivingLessonID, InstructorID, "
+								+ "ClientID, CarVIN, LessonDate, StartTime, EndTime) values (?, ?, ?, ?, ?, ?, ?)");
 
-				ResultSet results = stmt.executeQuery(sql);
+				pstmt.setInt(1, 3016);
+				pstmt.setInt(2, getInstructorID());
+				pstmt.setInt(3, Integer.parseInt(clientText.getText()));
+				pstmt.setString(4, "123123126");
 
-				// checks if instructor will be on vacation
-				LocalDate date = LocalDate.parse(dateText.getText());
-				while (results.next())
-				{
-					LocalDate fromDate = LocalDate.parse(results.getString("fromdate"));
-					LocalDate toDate = LocalDate.parse(results.getString("todate"));
-					if (!date.isBefore(fromDate) && !date.isAfter(toDate))
-					{
-						resultsLabel.setText("Instructor Is Unavailable");
-						window.setVisible(true);
-						return;
-					}
-				}
+				// converts to timestamp and sets date
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				Long date = sdf.parse(dateText.getText()).getTime();
+				java.sql.Timestamp timestamp = new java.sql.Timestamp(date);
+				pstmt.setTimestamp(5, timestamp);
 
-				// checks if the instructor already has a lesson for that day/time
-				sql = "select lessondate, starttime, endtime from drivinglesson where instructorid = "
-						+ getInstructorID();
-				stmt = dbConnection.createStatement();
-				results = stmt.executeQuery(sql);
+				// converts time to milliseconds
+				sdf = new SimpleDateFormat("HH:mm");
+				sdf.setTimeZone(TimeZone.getTimeZone("EST"));
+				Long time = sdf.parse(timeText.getText()).getTime();
 
-				LocalTime time = LocalTime.parse(timeText.getText());
-				while (results.next())
-				{
-					LocalDate lessonDate = LocalDate.parse(results.getString("lessondate"));
-					LocalTime startTime = LocalTime.parse(results.getString("starttime"));
-					LocalTime endTime = LocalTime.parse(results.getString("endtime"));
-					if (date.equals(lessonDate) && !time.isBefore(startTime) && time.isBefore(endTime))
-					{
-						resultsLabel.setText("Instructor Is Unavailable");
-						window.setVisible(true);
-						return;
-					}
-				}
+				timestamp = new java.sql.Timestamp(time);
+				System.out.println(timestamp.toString());
+				pstmt.setTimestamp(6, timestamp);
 
-				resultsLabel.setText("Instructor Is Free");
-				window.setVisible(true);
+				// sets end time at an hour after start time
+				timestamp = new java.sql.Timestamp(time + 3600000);
+				pstmt.setTimestamp(7, timestamp);
+
+				pstmt.execute(); // execute insert statement
+				System.out.println("executed the update statement");
+				pstmt.close();
+				window.dispose();
+				new ClientMenuWindow(dbConnection);
 
 			}
-			catch (SQLException ex)
+			catch (SQLException | ParseException ex)
 			{
 				JOptionPane.showMessageDialog(null, "database issue - contact IT. " + ex.getMessage());
 			}
 		}
-
 	}
-
 }

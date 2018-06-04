@@ -15,7 +15,7 @@ public class LoginButtonPanel extends JPanel
 {
 	private JButton okButton;
 	private JButton exitButton;
-	private JButton cancelButton;
+	private JButton backButton;
 	private Connection dbConnection;
 	private LogInWindow parentWindow;
 	private LogInPanel loginPanel;
@@ -31,16 +31,17 @@ public class LoginButtonPanel extends JPanel
 
 		okButton = new JButton("OK");
 		exitButton = new JButton("EXIT");
-		cancelButton = new JButton("CANCEL");
+		backButton = new JButton("BACK");
 
 		this.add(okButton);
-		this.add(cancelButton);
+		this.add(backButton);
 		this.add(exitButton);
 
 		dbConnection = null;
 
 		okButton.addActionListener(new ButtonActionListener());
-
+		exitButton.addActionListener(new ButtonActionListener());
+		backButton.addActionListener(new ButtonActionListener());
 	}
 
 	public Connection getDatabaseConnection()
@@ -93,7 +94,16 @@ public class LoginButtonPanel extends JPanel
 					JOptionPane.showMessageDialog(null, sql.getMessage());
 					dbConnection = null;
 				}
-
+			}
+			
+			if (theButton == exitButton)
+			{
+				System.out.println("exiting the system");
+				System.exit(0);
+			}
+			if (theButton == backButton)
+			{
+				parentWindow.dispose();
 			}
 		}
 	}
