@@ -52,7 +52,6 @@ public class GenericButtonPanel extends JPanel
 			else if (theButton == backButton)
 			{
 				parentWindow.dispose();
-				new ClientMenuWindow(dbConnection);
 			}
 		}
 	}

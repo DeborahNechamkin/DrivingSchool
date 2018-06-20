@@ -68,7 +68,7 @@ public class LoginRadioButtonPanel extends JPanel
 				userChoice = "client";
 			}
 			else if (theButton == managerButton) {
-				userChoice = "manaager";
+				userChoice = "manager";
 			}
 			
 		}

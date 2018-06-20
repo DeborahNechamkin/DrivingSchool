@@ -22,12 +22,13 @@ public class MakePaymentWindow extends JFrame
 
 		this.setLayout(new GridLayout(3, 2));
 
-		this.add(new JLabel("Client ID"));
+		this.add(new JLabel("Lesson ID"));
 		clientText = new JTextField(8);
 		this.add(clientText);
 
 		this.add(new GenericButtonPanel(this, dbConnection, new MakePaymentActionListener()));
 
+		this.add(new JLabel(""));
 		resultsLabel = new JLabel();
 		this.add(resultsLabel);
 		this.pack();
@@ -42,16 +43,31 @@ public class MakePaymentWindow extends JFrame
 		{
 			try
 			{
-				String sql = "select balance from client where clientid = " + clientText.getText();
-				Statement stmt = dbConnection.createStatement();
-				ResultSet results = stmt.executeQuery(sql);
+				String sql = "select payment from completedlesson where lessonid = ?";
+				PreparedStatement stmt = dbConnection.prepareStatement(sql);
+				stmt.setString(1, clientText.getText());
+				ResultSet results = stmt.executeQuery();
 				
-				resultsLabel.setText(results.getString("balance"));
+				results.next();
+				if (results.getDouble(1)!=0)
+				{
+					resultsLabel.setText("Payment Unsuccesful");
+					return;
+				}
+				
+				
+				sql = "update completedlesson set payment = 45 where lessonid = ?";
+				stmt = dbConnection.prepareStatement(sql);
+				stmt.setString(1, clientText.getText());
+				stmt.execute();
+
+				resultsLabel.setText("Payment Succesful");
 				window.setVisible(true);
 				return;
 			}
 			catch (SQLException ex)
 			{
+				resultsLabel.setText("Payment Unsuccesful");
 				JOptionPane.showMessageDialog(null, "database issue - contact IT. " + ex.getMessage());
 			}
 		}

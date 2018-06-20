@@ -2,6 +2,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -34,6 +35,7 @@ public class viewTestResultsWindow extends JFrame
 
 		this.add(new GenericButtonPanel(this, dbConnection, new ViewTestResultsActionListener()));
 
+		this.add(new JLabel(""));
 		resultsLabel = new JLabel();
 		this.add(resultsLabel);
 		this.pack();
@@ -49,9 +51,10 @@ public class viewTestResultsWindow extends JFrame
 		{
 			try
 			{
-				String sql = "select roadtestdate, result from roadtest where clientid = " + clientText.getText();
-				Statement stmt = dbConnection.createStatement();
-				ResultSet results = stmt.executeQuery(sql);
+				String sql = "select roadtestdate, result from roadtest where clientid = ?";
+				PreparedStatement stmt = dbConnection.prepareStatement(sql);
+				stmt.setString(1, clientText.getText());
+				ResultSet results = stmt.executeQuery();
 				StringBuilder builder = new StringBuilder();
 
 				while (results.next())

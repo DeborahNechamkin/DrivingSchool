@@ -11,6 +11,7 @@ public class ViewBalanceWindow extends JFrame
 	private JTextField clientText;
 	private JFrame window;
 	private JLabel resultsLabel;
+	private Double lessonPrice;
 
 	public ViewBalanceWindow(Connection dbConnection)
 	{
@@ -27,7 +28,11 @@ public class ViewBalanceWindow extends JFrame
 		this.add(clientText);
 
 		this.add(new GenericButtonPanel(this, dbConnection, new ViewBalanceActionListener()));
+		
+		lessonPrice = 45.0;
 
+		this.add(new JLabel(""));
+		
 		resultsLabel = new JLabel();
 		this.add(resultsLabel);
 		this.pack();
@@ -42,11 +47,16 @@ public class ViewBalanceWindow extends JFrame
 		{
 			try
 			{
-				String sql = "select balance from client where clientid = " + clientText.getText();
-				Statement stmt = dbConnection.createStatement();
-				ResultSet results = stmt.executeQuery(sql);
 				
-				resultsLabel.setText(results.getString("balance"));
+				String sql = "select count(payment) from completedlesson inner join drivinglesson "
+						+ "on lessonid = drivinglessonid"
+						+ " where clientid = ? and payment=0";
+				PreparedStatement stmt = dbConnection.prepareStatement(sql);
+				stmt.setString(1, clientText.getText());
+				ResultSet results = stmt.executeQuery();
+				
+				results.next();
+				resultsLabel.setText("Balance: " + String.valueOf(results.getDouble(1)*lessonPrice));
 				window.setVisible(true);
 				return;
 			}

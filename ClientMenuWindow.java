@@ -77,11 +77,11 @@ public class ClientMenuWindow extends JFrame
 			JButton theButton = (JButton)event.getSource();
 			
 			if (theButton == viewInstructorAvailabilityButton) {
-				window.dispose();
+				//window.dispose();
 				new viewInstructorAvailabilityWindow(dbConnection);
 			}
 			else if (theButton == scheduleLessonButton) {		
-				window.dispose();
+				//window.dispose();
 				new ScheduleLessonWindow(dbConnection);
 			}
 			else if (theButton == viewTestResultsButton) {

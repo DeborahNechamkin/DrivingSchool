@@ -2,6 +2,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -43,6 +44,7 @@ public class viewInstructorAvailabilityWindow extends JFrame
 
 		this.add(new GenericButtonPanel(this, dbConnection, new ViewAvailabilityActionListener()));
 
+		this.add(new JLabel(""));
 		resultsLabel = new JLabel();
 		this.add(resultsLabel);
 		this.pack();
@@ -54,7 +56,7 @@ public class viewInstructorAvailabilityWindow extends JFrame
 	{
 
 		String sql = "select employeeID , emp_fname, emp_lname from employee"
-				+ " inner join instructor on employee.employeeid = " + " instructor.instructorid";
+				+ " inner join instructor on employee.employeeid = instructor.instructorid";
 		try
 		{
 			Statement stmt = dbConnection.createStatement();
@@ -110,11 +112,11 @@ public class viewInstructorAvailabilityWindow extends JFrame
 		{
 			try
 			{
-				String sql = "select fromdate, todate from instructorvacation where instructorid = "
-						+ getInstructorID();
-				Statement stmt = dbConnection.createStatement();
+				String sql = "select fromdate, todate from instructorvacation where instructorid = ?";
+				PreparedStatement stmt = dbConnection.prepareStatement(sql);
+				stmt.setInt(1, getInstructorID());
 
-				ResultSet results = stmt.executeQuery(sql);
+				ResultSet results = stmt.executeQuery();
 
 				// checks if instructor will be on vacation
 				LocalDate date = LocalDate.parse(dateText.getText());
@@ -131,10 +133,10 @@ public class viewInstructorAvailabilityWindow extends JFrame
 				}
 
 				// checks if the instructor already has a lesson for that day/time
-				sql = "select lessondate, starttime, endtime from drivinglesson where instructorid = "
-						+ getInstructorID();
-				stmt = dbConnection.createStatement();
-				results = stmt.executeQuery(sql);
+				sql = "select lessondate, starttime, endtime from drivinglesson where instructorid = ?";
+				stmt = dbConnection.prepareStatement(sql);
+				stmt.setInt(1, getInstructorID());
+				results = stmt.executeQuery();
 
 				LocalTime time = LocalTime.parse(timeText.getText());
 				while (results.next())
@@ -150,7 +152,7 @@ public class viewInstructorAvailabilityWindow extends JFrame
 					}
 				}
 
-				resultsLabel.setText("Instructor Is Free");
+				resultsLabel.setText("Instructor Is Available");
 				window.setVisible(true);
 
 			}
