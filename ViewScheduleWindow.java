@@ -49,7 +49,7 @@ public class ViewScheduleWindow extends JFrame
 		@Override
 		public void actionPerformed(ActionEvent arg0)
 		{
-			String sql = "select StartTime, EndTime from DrivingLesson where instructorID = ? and LessonDate = ? ";
+			String sql = "select * from DrivingLesson where instructorID = ? and LessonDate = ? ";
 			try
 			{
 				PreparedStatement stmt = dbconnection.prepareStatement(sql);
@@ -68,15 +68,32 @@ public class ViewScheduleWindow extends JFrame
 				System.out.println(results.next());
 				while (results.next())
 				{
+					info.append("\nLesson ID: ");
+		            info.append(results.getInt("DrivingLessonID"));
+		            info.append(" Instructor ID: ");
+		            info.append(results.getInt("InstructorID"));
+		            info.append(" Client ID: ");
+		            info.append(results.getInt("ClientID"));
+		            info.append(" Car VIN: ");
+		            info.append(results.getInt("CarVIN"));
+		            info.append(" Lesson Date: ");
+		            info.append(results.getDate("LessonDate"));
+		            info.append(" Start time: ");
+		            info.append(results.getTime("StartTime"));
+		            info.append(" End time: ");
+		            info.append(results.getTime("EndTime"));
+		            //info.append("\n");
+					/*//try get Timestamp
 					// how to retrieve the data from the result set.
 					System.out.println("hi" + results.getString(1));
 					info.append(results.getString(2) + "-");
 					info.append(results.getTime(1) + ". ");
-				}
+				}*/
 				System.out.println(info.toString());
 				resultsLabel.setText(info.toString());
 				setVisible(true);
 			}
+				}
 			catch (SQLException | ParseException e)
 			{
 				JOptionPane.showMessageDialog(null, "database issue - contact IT. " + e.getMessage());

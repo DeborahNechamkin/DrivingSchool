@@ -1,0 +1,11 @@
+
+public enum CarRepairType {
+BRAKES,
+OILCHNFE,
+TUNEUP,
+BODYWORK,
+GLASSREPAIR,
+FIXMIRROR,
+TIRES;
+
+}
