@@ -4,6 +4,7 @@ import java.awt.event.ActionListener;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.TimeZone;
 import javax.swing.*;
@@ -109,19 +110,18 @@ public class ScheduleLessonWindow extends JFrame
 			try
 			{
 				PreparedStatement pstmt = dbConnection
-						.prepareStatement("insert into DrivingLesson (DrivingLessonID, InstructorID, "
-								+ "ClientID, CarVIN, LessonDate, StartTime, EndTime) values (?, ?, ?, ?, ?, ?, ?)");
+						.prepareStatement("insert into DrivingLesson (InstructorID, "
+								+ "ClientID, CarVIN, LessonDate, StartTime, EndTime) values (?, ?, ?, ?, ?, ?)");
 
-				pstmt.setInt(1, 3016);
-				pstmt.setInt(2, getInstructorID());
-				pstmt.setInt(3, Integer.parseInt(clientText.getText()));
-				pstmt.setString(4, "123123126");
+				pstmt.setInt(1, getInstructorID());
+				pstmt.setInt(2, Integer.parseInt(clientText.getText()));
+				pstmt.setString(3, "123123126");
 
 				// converts to timestamp and sets date
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 				Long date = sdf.parse(dateText.getText()).getTime();
 				java.sql.Timestamp timestamp = new java.sql.Timestamp(date);
-				pstmt.setTimestamp(5, timestamp);
+				pstmt.setTimestamp(4, timestamp);
 
 				// converts time to milliseconds
 				sdf = new SimpleDateFormat("HH:mm");
@@ -130,11 +130,11 @@ public class ScheduleLessonWindow extends JFrame
 
 				timestamp = new java.sql.Timestamp(time);
 				System.out.println(timestamp.toString());
-				pstmt.setTimestamp(6, timestamp);
+				pstmt.setTimestamp(5, timestamp);
 
 				// sets end time at an hour after start time
 				timestamp = new java.sql.Timestamp(time + 3600000);
-				pstmt.setTimestamp(7, timestamp);
+				pstmt.setTimestamp(6, timestamp);
 
 				pstmt.execute(); // execute insert statement
 				System.out.println("executed the update statement");
@@ -146,6 +146,9 @@ public class ScheduleLessonWindow extends JFrame
 			catch (SQLException | ParseException ex)
 			{
 				JOptionPane.showMessageDialog(null, "database issue - contact IT. " + ex.getMessage());
+			}
+			catch(DateTimeParseException d){
+				JOptionPane.showMessageDialog(null,"Please enter a valid Date/Time Format YYYY-MM-DD HH:MM");
 			}
 		}
 	}

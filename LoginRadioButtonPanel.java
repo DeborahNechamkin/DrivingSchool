@@ -3,19 +3,17 @@
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
 
+@SuppressWarnings("serial")
 public class LoginRadioButtonPanel extends JPanel
 {
 	private JRadioButton instructorButton;
     private  JRadioButton clientButton;
-    private JRadioButton managerButton;
+    
     private String userChoice;
     
 	public LoginRadioButtonPanel() {
@@ -25,7 +23,7 @@ public class LoginRadioButtonPanel extends JPanel
 		//ButtonGroup choicesGRP = new ButtonGroup();
 		instructorButton = new JRadioButton("Instructor");
 		clientButton = new JRadioButton("Client");
-		managerButton = new JRadioButton("Manager");
+		
 		
 		
 		/*choicesGRP.add(shekelButton);
@@ -36,7 +34,7 @@ public class LoginRadioButtonPanel extends JPanel
 		//add each of the radio buttons to a Box
 		HorizontalBox.add(instructorButton);
 		HorizontalBox.add(clientButton);
-		HorizontalBox.add(managerButton);
+		
 		
 		//now add the box to the panel
 		this.add(HorizontalBox);
@@ -44,7 +42,7 @@ public class LoginRadioButtonPanel extends JPanel
 		//add actionlistener
 		instructorButton.addActionListener(new UserLoginTypeListener());
 		clientButton.addActionListener(new UserLoginTypeListener());
-		managerButton.addActionListener(new UserLoginTypeListener());
+		
 		
 		//initialize userChoice
 		userChoice = null;
@@ -66,9 +64,6 @@ public class LoginRadioButtonPanel extends JPanel
 			else if (theButton == clientButton) {
 			
 				userChoice = "client";
-			}
-			else if (theButton == managerButton) {
-				userChoice = "manager";
 			}
 			
 		}

@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeParseException;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -88,11 +89,15 @@ public class ViewTotalHoursWindow extends JFrame
 				setVisible(true);
 
 			}
-			catch (SQLException | ParseException ex)
+			catch (SQLException |ParseException ex)
 			{
 				JOptionPane.showMessageDialog(null, "database issue - contact IT. " + ex.getMessage());
 				ex.printStackTrace();
 			}
+			catch (DateTimeParseException d){
+				JOptionPane.showMessageDialog(null, "Please enter proper date format YYYY-MM-DD");
+			}
+			
 		}
 	}
 }

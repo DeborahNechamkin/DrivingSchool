@@ -8,6 +8,7 @@ import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
+@SuppressWarnings("serial")
 public class InstructorMenuWindow extends JFrame
 
 {
@@ -61,12 +62,12 @@ public class InstructorMenuWindow extends JFrame
 			JButton theButton = (JButton) event.getSource();
 			if (theButton == viewScheduleButton)
 			{
-				//window.dispose();
+				// window.dispose();
 				new ViewScheduleWindow(dbConnection);
 			}
 			else if (theButton == viewtotalhoursButton)
 			{
-				//window.dispose();
+				// window.dispose();
 				new ViewTotalHoursWindow(dbConnection);
 			}
 		}

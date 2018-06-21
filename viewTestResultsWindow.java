@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.format.DateTimeParseException;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -69,6 +71,9 @@ public class viewTestResultsWindow extends JFrame
 			catch (SQLException ex)
 			{
 				JOptionPane.showMessageDialog(null, "database issue - contact IT. " + ex.getMessage());
+			}
+			catch(DateTimeParseException d){
+				JOptionPane.showMessageDialog(null,"Please enter a valid Date Format YYYY-MM-DD");
 			}
 		}
 

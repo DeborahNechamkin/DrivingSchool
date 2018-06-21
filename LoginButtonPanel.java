@@ -1,5 +1,4 @@
 
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -82,12 +81,6 @@ public class LoginButtonPanel extends JPanel
 						new InstructorMenuWindow(dbConnection);
 					}
 
-					else if (userType.equalsIgnoreCase("manager"))
-					{
-						parentWindow.close();
-						new ManagerMenuWindow(dbConnection);
-					}
-
 				}
 				catch (SQLException sql)
 				{
@@ -95,7 +88,7 @@ public class LoginButtonPanel extends JPanel
 					dbConnection = null;
 				}
 			}
-			
+
 			if (theButton == exitButton)
 			{
 				System.out.println("exiting the system");

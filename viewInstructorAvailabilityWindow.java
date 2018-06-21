@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -159,6 +160,9 @@ public class viewInstructorAvailabilityWindow extends JFrame
 			catch (SQLException ex)
 			{
 				JOptionPane.showMessageDialog(null, "database issue - contact IT. " + ex.getMessage());
+			}
+			catch(DateTimeParseException d){
+				JOptionPane.showMessageDialog(null,"Please enter a valid Date/Time Format YYYY-MM-DD HH:MM");
 			}
 		}
 

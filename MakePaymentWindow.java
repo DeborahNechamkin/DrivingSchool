@@ -2,6 +2,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
+import java.time.format.DateTimeParseException;
+
 import javax.swing.*;
 
 @SuppressWarnings("serial")
@@ -69,6 +71,9 @@ public class MakePaymentWindow extends JFrame
 			{
 				resultsLabel.setText("Payment Unsuccesful");
 				JOptionPane.showMessageDialog(null, "database issue - contact IT. " + ex.getMessage());
+			}
+			catch(DateTimeParseException d){
+				JOptionPane.showMessageDialog(null,"Please enter a valid Date Format YYYY-MM-DD");
 			}
 		}
 
